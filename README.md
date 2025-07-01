@@ -13,7 +13,7 @@ git clone https://github.com/ZaferLoraine/fakeapp
 ```bash
 cd fakeapp
 ```
-        - 
+
 ### Rodar o docker
 ```bash
 docker compose up -d
