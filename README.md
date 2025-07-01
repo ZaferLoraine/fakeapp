@@ -3,6 +3,18 @@
 Este projeto realiza a extração, transformação e carga (ETL) de dados da FakeStore API utilizando **PySpark** e grava o resultado processado em um banco de dados **PostgreSQL** via JDBC.
 
 ---
+## Passo a passo pra rodar 
+  - clonar o repositorio
+        - git clone https://github.com/ZaferLoraine/fakeapp
+    
+ - navegar ate a pasta do projeto
+        - cd fakeapp
+   
+- rodar o docker
+       - docker compose up -d
+  
+- descobrir a porta
+       - docker exec -it spark_jupyter jupyter server list (só é necessário caso vá pelo jupyter notebook)
 
 ##  Objetivo
 
