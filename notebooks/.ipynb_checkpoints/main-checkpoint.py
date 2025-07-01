@@ -1,0 +1,91 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "2e7fde27-a854-4e41-b504-cbcd5b8ef954",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pyspark.sql import DataFrame, SparkSession\n",
+    "from processamento import FakeStoreDataProcessor\n",
+    "\n",
+    "def salvar_no_postgres(df: DataFrame, tabela: str, spark: SparkSession):\n",
+    "    \"\"\"Salva DataFrame no PostgreSQL usando JDBC\"\"\"\n",
+    "    try:\n",
+    "        df.write \\\n",
+    "            .format(\"jdbc\") \\\n",
+    "            .option(\"url\", \"jdbc:postgresql://postgres:5432/spark_db\") \\\n",
+    "            .option(\"dbtable\", tabela) \\\n",
+    "            .option(\"user\", \"admin\") \\\n",
+    "            .option(\"password\", \"admin\") \\\n",
+    "            .option(\"driver\", \"org.postgresql.Driver\") \\\n",
+    "            .mode(\"append\") \\\n",
+    "            .save()\n",
+    "        \n",
+    "        print(f\"✅ Dados salvos em '{tabela}' com sucesso.\")\n",
+    "        return True\n",
+    "    except Exception as e:\n",
+    "        print(f\"❌ Erro ao salvar '{tabela}': {e}\")\n",
+    "        return False\n",
+    "\n",
+    "def main():\n",
+    "    # Configuração do Spark com driver JDBC\n",
+    "    spark = SparkSession.builder \\\n",
+    "        .appName(\"FakeStoreProcessor\") \\\n",
+    "        .config(\"spark.jars\", \"/opt/spark/jars/postgresql-42.6.0.jar\") \\\n",
+    "        .getOrCreate()\n",
+    "\n",
+    "    try:\n",
+    "        # Processamento dos dados\n",
+    "        processador = FakeStoreDataProcessor()\n",
+    "        df_final = processador.filtrar_preco_avaliacao(\n",
+    "                    processador.limpar_dados(\n",
+    "                        processador.processar_dados()\n",
+    "                    )\n",
+    "                )\n",
+    "        \n",
+    "        # Persistência no PostgreSQL\n",
+    "        if not salvar_no_postgres(df_final, \"categoria_media\", spark):\n",
+    "            raise Exception(\"Falha na persistência dos dados\")\n",
+    "        \n",
+    "        # Divisão opcional para processamento em partes\n",
+    "        partes = processador.dividir_em_partes(df_final, 5)\n",
+    "        for i, parte in enumerate(partes, 1):\n",
+    "            print(f\"\\nParte {i}:\")\n",
+    "            parte.show(truncate=False)\n",
+    "            \n",
+    "    except Exception as e:\n",
+    "        print(f\"🔴 Erro no processamento: {str(e)}\")\n",
+    "        \n",
+    "    finally:\n",
+    "        spark.stop()\n",
+    "        print(\"Processamento finalizado\")\n",
+    "\n",
+    "if __name__ == \"__main__\":\n",
+    "    main()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,4 @@
+pyspark==3.5.0
+jupyterlab
+sqlalchemy
+psycopg2-binary
