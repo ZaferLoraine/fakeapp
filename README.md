@@ -4,18 +4,26 @@ Este projeto realiza a extração, transformação e carga (ETL) de dados da Fak
 
 ---
 ## Passo a passo pra rodar 
-  - clonar o repositorio
-        - git clone https://github.com/ZaferLoraine/fakeapp
-    
- - navegar ate a pasta do projeto
-        - cd fakeapp
-   
-- rodar o docker
-       - docker compose up -d
-  
-- descobrir a porta
-       - docker exec -it spark_jupyter jupyter server list (só é necessário caso vá pelo jupyter notebook)
+### clonar o repositorio
+```bash
+git clone https://github.com/ZaferLoraine/fakeapp
+```
 
+### Navegar ate a pasta do projeto
+```bash
+cd fakeapp
+```
+        - 
+### Rodar o docker
+```bash
+docker compose up -d
+```
+
+### Acessar o Jupyter
+Para recuperar o endereço do Jupyter com porta e token de autenticação, execute este comando:
+```bash
+docker exec -it spark_jupyter jupyter server list
+```
 ##  Objetivo
 
 - Coletar dados da FakeStore API.
