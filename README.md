@@ -1,4 +1,4 @@
-# 🛠️ FakeStore Data Pipeline
+# FakeStore Data Pipeline
 
 Este projeto realiza a extração, transformação e carga (ETL) de dados da FakeStore API utilizando **PySpark** e grava o resultado processado em um banco de dados **PostgreSQL** via JDBC.
 
